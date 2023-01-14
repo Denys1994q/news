@@ -12,7 +12,7 @@ import { CardProps } from "../card/card.props";
 const CardsList = (): JSX.Element => {
     const { request } = useHttp();
 
-    const [news, setNews] = useState([]);
+    const [news, setNews] = useState<CardProps[] | []>([]);
 
     useEffect(() => {
         request("https://api.spaceflightnewsapi.net/v3/articles").then(data => setNews(data));

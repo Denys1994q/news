@@ -1,12 +1,17 @@
-import HomePage from "../pages/homePage/HomePage";
 import "./App.sass";
 
+import HomePage from "../../pages/homePage/HomePage";
+import ArticlePage from "../../pages/articlePage/ArticlePage";
 
-// тут тільки роути, один на HomePage, інший на динамічні роути
+import { Routes, Route } from "react-router-dom";
+
 function App() {
     return (
         <div className='container'>
-            <HomePage />
+            <Routes>
+                <Route path='/' element={<HomePage />} />
+                <Route path='/:id' element={<ArticlePage />} />
+            </Routes>
         </div>
     );
 }

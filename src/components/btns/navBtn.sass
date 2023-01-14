@@ -1,0 +1,33 @@
+.btnRoute
+    color: #363636
+    font-weight: 700
+    font-size: 16px
+    line-height: 150%
+    position: relative
+    display: inline-block
+    cursor: pointer
+    transition: all .2s ease-in-out
+    &:hover
+        color: #a00f0f
+    &-arrowAfter
+        padding-right: 1.2rem
+        &::after
+            content: ''
+            background: url('../../imgs/arrow-right.png') no-repeat center
+            position: absolute
+            display: block
+            top: .7rem
+            right: -.6rem
+            width: 1.2rem
+            height: 1rem
+    &-arrowBefore
+        padding-left: 1.6rem
+        &::before
+            content: ''
+            background: url('../../imgs/arrow-left.png') no-repeat center
+            position: absolute
+            display: block
+            top: .6rem
+            left: 0rem
+            width: 1.2rem
+            height: 1rem
