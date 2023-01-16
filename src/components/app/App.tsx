@@ -5,6 +5,7 @@ import ArticlePage from "../../pages/articlePage/ArticlePage";
 
 import { Routes, Route } from "react-router-dom";
 
+// обробити помилки, якщо немає інтернету 
 function App() {
     return (
         <div className='container'>
