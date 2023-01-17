@@ -1,91 +1,88 @@
 import { CardProps } from "../card/card.props";
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useHttp } from "../../hooks/http.hook";
 
 const initialState = {
     news: <CardProps[]>[], // початковий список всіх новин із серверу, які відразу відображаються на сторінці
+    newsLoading: false,
+    newsError: false,
     filteredNews: <CardProps[] | null>null, // відфільтровані новини відповідно до даних, які ввів користувач
     searchInpValue: '' // дані, які ввів користувач для пошуку 
 };
 
-let arr: CardProps[] = [];
+export const fetchNews: any = createAsyncThunk("news/fetchNews", () => {
+    const { request } = useHttp();
+    return request(`https://api.spaceflightnewsapi.net/v3/articles`);
+});
 
 // ф-ія проходить по тайтлу і деску і шукає кусок через індексОф з цими словами і підсвідчує їх. 
 const newsSlice = createSlice({
     name: "news",
     initialState,
     reducers: {
-        news_getNews: (state, action) => {
-            arr.push(...action.payload)
-            state.news = arr
-        },
+        // не забути про динамічний роутинг 
         news_filterNews: (state, action) => {
             let copyNewsArr = [...state.news]
             let filteredArr: any = []; 
-            // filteredArr = copyNewsArr.filter(item => {
-            //     let lowerCasedTitle = item.title.toLowerCase();
-            //     let lowerCasedDesc = item.summary.toLowerCase();
-            //     if (lowerCasedTitle.indexOf(action.payload) > -1 || lowerCasedDesc.indexOf(action.payload) > -1) {
-            //         return item
-            //     } else {
-            //         filteredArr = null
-            //     }
-            // })
-            // state.filteredNews = filteredArr;
 
-            // фільтрація елементів. Якщо 
+            let str = action.payload
+            // забираємо пробіли не тільки на початку і в кінці, але й забираємо зайві пробіли всередині між словами (якщо вони є) 
+            let j = str.replace(/\s+/g, ' ').trim()
+            console.log(j)
 
-            // при кліку на пустий не коректно 
+            let inputWordsArr: string[] = j.split(' ')
             
-            // якщо є не лише вся точна фраза, а будь-яке слово з фрази 
-            // action.payload розбивати на слова по пробілу і по кожному слову шукати
-            // indexOf може не все підсвічувати, а тільки перше 
-
-            // перебирати циклом всі слова
-
-            let wordArr = action.payload.trim().split(' ')
-            wordArr.map((word: any) => {
+            inputWordsArr.map((wordInInput: any) => {
+                // console.log(wordInInput )
                 copyNewsArr.map(item => {
                     // приводимо до нижнього регістру 
-                    let lowerCasedTitle = item.title.toLowerCase();
-                    let lowerCasedDesc = item.summary.toLowerCase();
-                    
-                    if (word === '') {
-                        filteredArr = [...state.news]
-                    } // якщо знайдено підрядок в заголовку - додаємо на початок масиву і якщо цього об'єкту ще не додано
-                    else if (lowerCasedTitle.indexOf(word) > -1 && filteredArr.indexOf(item) === -1) {
-                        filteredArr.unshift(item)
-                    } 
-                    // якщо знайдено підрядок в опису новини - додаємо в кінець масиву
-                    else if (lowerCasedDesc.indexOf(word) > -1 && filteredArr.indexOf(item) === -1) {
-                        filteredArr.push(item)
-                    }
+                    let lowerCasedTitle = item.title.toLowerCase().split(' ')
+                    let lowerCasedDesc = item.summary.toLowerCase().split(' ');
+
+                    lowerCasedTitle.map(wordInTitle => {
+                        // якщо інпут пустий, показуємо всі новини 
+                        if (wordInInput === '') {
+                            filteredArr = [...state.news]
+                        } // якщо знайдено підрядок в заголовку - додаємо новину на початок масиву і якщо цього об'єкту ще не додано
+                        else if (wordInTitle === wordInInput && filteredArr.indexOf(item) === -1) {
+                            filteredArr.unshift(item)
+                        } 
+                    })
+                    lowerCasedDesc.map(wordInDesc => {
+                        // якщо інпут пустий, показуємо всі новини 
+                        if (wordInInput === '') {
+                            filteredArr = [...state.news]
+                        } // якщо знайдено підрядок в заголовку - додаємо новину на початок масиву і якщо цього об'єкту ще не додано
+                        else if (wordInDesc === wordInInput && filteredArr.indexOf(item) === -1) {
+                            filteredArr.push(item)
+                        } 
+                    })
                 })
                 state.filteredNews = filteredArr;
             })
-
-            // copyNewsArr.map(item => {
-            //     // приводимо до нижнього регістру 
-            //     let lowerCasedTitle = item.title.toLowerCase();
-            //     let lowerCasedDesc = item.summary.toLowerCase();
-            //     // якщо знайдено підрядок в рядку заголовку - додаємо на початок масиву 
-            //     if (action.payload === '') {
-            //         filteredArr = [...state.news]
-            //     }
-            //     else if (lowerCasedTitle.indexOf(action.payload) > -1) {
-            //         filteredArr.unshift(item)
-            //     } 
-            //     // якщо знайдено підрядок в рядку опису новини - додаємо в кінець масиву
-            //     else if (lowerCasedDesc.indexOf(action.payload) > -1) {
-            //         filteredArr.push(item)
-            //     }
-            // })
-            // state.filteredNews = filteredArr;
         },
         news_getSearchInpValue: (state, action) => {
             state.searchInpValue = action.payload
         },
     },
+    extraReducers: builder => {
+        builder 
+            .addCase(fetchNews.pending, state => {
+                state.newsLoading = true;
+                state.newsError = false;
+            })
+            .addCase(fetchNews.fulfilled, (state, action) => {
+                state.news = action.payload;
+                state.newsLoading = false;
+                state.newsError = false;
+            })
+            .addCase(fetchNews.rejected, state => {
+                state.newsError = true;
+                state.newsLoading = false;
+            });
+        }
+
 });
 
 const { actions, reducer } = newsSlice;
@@ -93,7 +90,6 @@ const { actions, reducer } = newsSlice;
 export default reducer;
 
 export const {
-    news_getNews,
     news_filterNews,
     news_getSearchInpValue
 } = actions;

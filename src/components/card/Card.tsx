@@ -78,17 +78,16 @@ const Card = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Ele
                 }
             });
         });
-        let result;
-        return (result = data
+        return data
             .trim()
             .split(" ")
             .map((word: any, index: number) => {
                 if (numbers.includes(index)) {
-                    return <span className='hi'> {word}</span>;
+                    return <span className='card__highlighted'> {word}</span>;
                 } else {
                     return <span> {word} </span>;
                 }
-            }));
+            });
     };
 
     return (

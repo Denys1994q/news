@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { CardProps } from "../card/card.props";
 
-import { news_getNews } from "./newsSlice";
+import { fetchNews } from "./newsSlice";
 
 // помилку обробити
 // request робити в слайсі
@@ -20,7 +20,7 @@ const CardsList = (): JSX.Element => {
     const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
 
     useEffect(() => {
-        request("https://api.spaceflightnewsapi.net/v3/articles").then(data => dispatch(news_getNews(data)));
+        dispatch(fetchNews());
     }, []);
 
     // якщо користувач ще не вводив дані для фільтру, показуються всі новини, завантажені з серверу. Якщо вводив дані, то показуються лише відфільтровані новини
