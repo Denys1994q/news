@@ -1,23 +1,22 @@
 import "./cardsList.sass";
 
-import { useHttp } from "../../hooks/http.hook";
-
 import Card from "../card/Card";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import { CardProps } from "../card/card.props";
 
-import { fetchNews } from "./newsSlice";
+import { fetchNews } from "../../slices/newsSlice";
 
 // помилку обробити
-// request робити в слайсі
 const CardsList = (): JSX.Element => {
-    const { request } = useHttp();
     const dispatch = useDispatch();
 
     const allNewsFromServer = useSelector((state: any) => state.newsSlice.news);
     const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
+    const newsLoading = useSelector((state: any) => state.newsSlice.newsLoading);
+    const newsError = useSelector((state: any) => state.newsSlice.newsError);
 
     useEffect(() => {
         dispatch(fetchNews());
@@ -25,7 +24,7 @@ const CardsList = (): JSX.Element => {
 
     // якщо користувач ще не вводив дані для фільтру, показуються всі новини, завантажені з серверу. Якщо вводив дані, то показуються лише відфільтровані новини
     const news = !filteredNews ? allNewsFromServer : filteredNews;
-    const content = news.map((item: CardProps) => {
+    const newsCardContent = news.map((item: CardProps) => {
         return (
             <Card
                 id={item.id}
@@ -37,7 +36,33 @@ const CardsList = (): JSX.Element => {
         );
     });
 
-    return <ul className='cardsList'>{allNewsFromServer && allNewsFromServer.length > 0 ? content : "...Loading"}</ul>;
+    const pageContent = (
+        <>
+            {!newsError ? (
+                <ul className='cardsList'>
+                    {allNewsFromServer && allNewsFromServer.length > 0 ? newsCardContent : null}
+                </ul>
+            ) : (
+                <h4>Sorry, something goes wrong... </h4>
+            )}
+        </>
+    );
+
+    return (
+        <>
+            {newsLoading ? (
+                <ClipLoader
+                    color={"#ddd"}
+                    loading={newsLoading}
+                    size={30}
+                    aria-label='Loading Spinner'
+                    data-testid='loader'
+                />
+            ) : (
+                <>{pageContent}</>
+            )}
+        </>
+    );
 };
 
 export default CardsList;

@@ -1,43 +1,61 @@
 import "./article.sass";
 
+import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useHttp } from "../../hooks/http.hook";
+import ClipLoader from "react-spinners/ClipLoader";
+
+import { fetchArticle } from "../../slices/articleSlice";
+
 import NavBtn from "../../components/btns/NavBtn";
 
 import { CardProps } from "../../components/card/card.props";
 
 const ArticlePage = (): JSX.Element => {
     const { id } = useParams();
-    const { request } = useHttp();
+    const dispatch = useDispatch();
 
-    // типізувати
-    const [article, setArticle] = useState<CardProps | null>(null);
+    const article: CardProps | null = useSelector((state: any) => state.articleSlice.article);
+    const articleLoading = useSelector((state: any) => state.articleSlice.articleLoading);
+    const articleError = useSelector((state: any) => state.articleSlice.articleError);
 
     useEffect(() => {
-        request(`https://api.spaceflightnewsapi.net/v3/articles/${id}`).then(data => setArticle(data));
+        dispatch(fetchArticle(id));
     }, []);
 
-    // це не просто картинка, це зображення з новини
+    const pageContent = (
+        <>
+            {!articleError && article ? (
+                <>
+                    {article && article.imageUrl ? (
+                        <img src={article.imageUrl} className='img-for-article' alt='article-background-image' />
+                    ) : null}
+                    <div className='article'>
+                        <h1 className='article__title'>{article.title}</h1>
+                        <p className='article__text'>{article.summary}</p>
+                    </div>
+                </>
+            ) : (
+                <h4>Sorry, something goes wrong... </h4>
+            )}
+            <NavBtn path={"./"} text={"Back to homepage"} arrow={"before"} />
+        </>
+    );
+
     return (
         <>
-            {article && article.imageUrl ? (
-                <img src={article.imageUrl} className='img-for-article' alt='article-background-image' />
-            ) : null}
-            <div className='article'>
-                <h1 className='article__title'>The 2020 World's Most Valuable Brands</h1>
-                <p className='article__text'>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Interdum ornare convallis non etiam
-                    tincidunt tincidunt. Non dolor vel purus id. Blandit habitasse volutpat id dolor pretium, sem
-                    iaculis. Faucibus commodo mauris enim, turpis blandit. Porttitor facilisi viverra mi lacus lacinia
-                    accumsan. Pellentesque gravida ligula bibendum aliquet nulla massa elit. Ac faucibus donec sit morbi
-                    pharetra urna. Vel facilisis amet placerat ultrices lobortis proin nulla. Molestie tellus sed
-                    pellentesque tortor vitae eu cras nisl. Sem facilisi amet vitae ultrices nullam tellus. Pellentesque
-                    eget iaculis morbi at quis eget lacus, aliquam etiam. Neque ipsum, placerat vel convallis nulla
-                    orci, nunc etiam.
-                </p>
-            </div>
-            <NavBtn path={"./"} text={"Back to homepage"} arrow={"before"} />
+            {articleLoading ? (
+                <ClipLoader
+                    color={"#ddd"}
+                    loading={articleLoading}
+                    size={30}
+                    aria-label='Loading Spinner'
+                    data-testid='loader'
+                />
+            ) : (
+                <>{pageContent}</>
+            )}
         </>
     );
 };

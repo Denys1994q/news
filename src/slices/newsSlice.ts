@@ -1,14 +1,14 @@
-import { CardProps } from "../card/card.props";
+import { CardProps } from "../components/card/card.props";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { useHttp } from "../../hooks/http.hook";
+import { useHttp } from "../hooks/http.hook";
 
 const initialState = {
     news: <CardProps[]>[], // початковий список всіх новин із серверу, які відразу відображаються на сторінці
-    newsLoading: false,
-    newsError: false,
+    newsLoading: false, // новини завантажуються
+    newsError: false, // помилка при завантаженні новин
     filteredNews: <CardProps[] | null>null, // відфільтровані новини відповідно до даних, які ввів користувач
-    searchInpValue: '' // дані, які ввів користувач для пошуку 
+    searchInpValue: '', // дані, які ввів користувач для пошуку 
 };
 
 export const fetchNews: any = createAsyncThunk("news/fetchNews", () => {
@@ -82,7 +82,6 @@ const newsSlice = createSlice({
                 state.newsLoading = false;
             });
         }
-
 });
 
 const { actions, reducer } = newsSlice;

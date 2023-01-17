@@ -1,3 +1,5 @@
+@import '../../styles/mixins/mixins.sass'
+
 .img-for-article
     position: absolute
     top: 0
@@ -14,6 +16,8 @@
     background: #ffffff
     padding: 3.5rem 7.5rem
     margin: 11rem 0 3.5rem 0
+    @include respond(phoneXL)
+        padding: 1rem
     &__title
         font-size: 24px
         line-height: 29px

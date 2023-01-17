@@ -1,14 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import newsSlice from '../components/cardsList/newsSlice'
-// import randomPokemonsSlice from "../components/random-pokemons/randomPokemonsSlice";
-// import searchPokemonsSlice from "../components/search/searchPokemonsSlice";
+import newsSlice from '../slices/newsSlice'
+import articleSlice from '../slices/articleSlice'
 
 export const store = configureStore({
     reducer: {
-        newsSlice
-        // randomPokemonsSlice,
-        // searchPokemonsSlice,
+        newsSlice,
+        articleSlice
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware(),
     devTools: process.env.NODE_ENV !== "production",
