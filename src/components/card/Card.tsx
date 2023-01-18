@@ -6,14 +6,28 @@ import { CardProps } from "./card.props";
 
 import NavBtn from "../btns/NavBtn";
 
+import { Box, Card, CardContent, CardMedia, CardActions, Typography } from "@mui/material";
+
+// import p from "../../imgs/date.png";
+
 // тут міняти тайтл, не лізти до фільтрованих щоб не редакс
-const Card = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Element => {
+const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Element => {
     const slicedTitle = title.length > 100 ? title.slice(0, 100) + "..." : title;
     const slicedSummary = summary.length > 100 ? summary.slice(0, 100) + "..." : summary;
     const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
     const searchInpValue = useSelector((state: any) => state.newsSlice.searchInpValue);
 
-    // виділяє знайдені слова в тексті 
+    // відображаємо дату в потрібному форматі 
+    const getDate = (publishedDate: any) => {
+        let newDate = new Date(publishedDate);
+        const year = newDate.getFullYear();
+
+        const date = newDate.toDateString().slice(3, 10) + ", " + year;
+
+        return date;
+    };
+
+    // виділяє знайдені слова в тексті
     const highlightLetters = (data: string): any => {
         // масив чисел, які означають індекси слів, які потрібно виділити
         let numbers: number[] = [];
@@ -45,17 +59,57 @@ const Card = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Ele
             });
     };
 
+    const dateStyles = {
+        fontSize: "14px",
+        position: "relative",
+        opacity: "0.6",
+        marginBottom: "25px",
+        paddingLeft: "22px",
+        "&::before": {
+            content: "''",
+            background: `url(${require("../../imgs/date.png")}) no-repeat`,
+            position: "absolute",
+            top: "1px",
+            left: 0,
+            width: "23px",
+            height: "23px",
+            opacity: 1,
+        },
+    };
+
     return (
-        <li className='card' key={id}>
-            <img className='card__image' src={imageUrl} alt='news-card-image' />
-            <div className='card__text'>
-                <p className='card__date'>{publishedAt}</p>
-                <h1 className='card__title'>{!filteredNews ? slicedTitle : highlightLetters(slicedTitle)}</h1>
-                <p className='card__desc'>{!filteredNews ? slicedSummary : highlightLetters(slicedSummary)}</p>
-                <NavBtn path={id} text={"Read more"} arrow={"after"} />
-            </div>
+        <li className='card'>
+            <Card sx={{ width: 400 }}>
+                <CardMedia
+                    sx={{ height: "217px", borderRadius: "5px 5px 0px 0px" }}
+                    image={imageUrl}
+                    title='news-card-image'
+                />
+                <CardContent sx={{ padding: "25px" }}>
+                    <div className='content-block'>
+                        <div className='content-block__text'>
+                            <Typography sx={dateStyles} component='div'>
+                                {getDate(publishedAt)}
+                            </Typography>
+                            <Typography
+                                sx={{ fontSize: "24px", lineHeight: "29px", marginBottom: "20px" }}
+                                component='div'>
+                                {!filteredNews ? slicedTitle : highlightLetters(slicedTitle)}
+                            </Typography>
+                            <Typography sx={{ fontSize: "16px", lineHeight: "150%", marginBottom: "20px" }}>
+                                {!filteredNews ? slicedSummary : highlightLetters(slicedSummary)}
+                            </Typography>
+                        </div>
+                        <div className='content-block__btns'>
+                            <CardActions sx={{ padding: "0px" }}>
+                                <NavBtn path={id} text={"Read more"} arrow={"after"} />
+                            </CardActions>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
         </li>
     );
 };
 
-export default Card;
+export default NewsCard;
