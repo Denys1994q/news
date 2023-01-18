@@ -3,7 +3,13 @@ import { CardProps } from "../components/card/card.props";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useHttp } from "../hooks/http.hook";
 
-const initialState = {
+type ArticleState = {
+    article: CardProps | null, 
+    articleLoading: boolean, 
+    articleError: boolean
+}
+
+const initialState: ArticleState = {
     article: null, // новина 
     articleLoading: false, // новина завантажується
     articleError: false // помилки при завантаженні новини
@@ -14,8 +20,6 @@ export const fetchArticle: any = createAsyncThunk("news/fetchArticle", id => {
     return request(`https://api.spaceflightnewsapi.net/v3/articles/${id}`);
 });
 
-
-// ф-ія проходить по тайтлу і деску і шукає кусок через індексОф з цими словами і підсвідчує їх. 
 const newsSlice = createSlice({
     name: "article",
     initialState,

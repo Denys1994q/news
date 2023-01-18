@@ -1,17 +1,25 @@
 import { CardProps } from "../components/card/card.props";
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { useHttp } from "../hooks/http.hook";
 
-const initialState = {
-    news: <CardProps[]>[], // початковий список всіх новин із серверу, які відразу відображаються на сторінці
+type NewsState = {
+    news: CardProps[],
+    newsLoading: boolean,
+    newsError: boolean,
+    filteredNews: CardProps[] | null,
+    searchInpValue: string
+}
+
+const initialState: NewsState = {
+    news: [], // початковий список всіх новин із серверу, які відразу відображаються на сторінці
     newsLoading: false, // новини завантажуються
     newsError: false, // помилка при завантаженні новин
-    filteredNews: <CardProps[] | null>null, // відфільтровані новини відповідно до даних, які ввів користувач
+    filteredNews: null, // відфільтровані новини відповідно до даних, які ввів користувач
     searchInpValue: '', // дані, які ввів користувач для пошуку 
 };
 
-export const fetchNews: any = createAsyncThunk("news/fetchNews", () => {
+export const fetchNews = createAsyncThunk<CardProps[], undefined, {rejectValue: string}>("news/fetchNews", () => {
     const { request } = useHttp();
     return request(`https://api.spaceflightnewsapi.net/v3/articles`);
 });
@@ -21,8 +29,7 @@ const newsSlice = createSlice({
     name: "news",
     initialState,
     reducers: {
-        // не забути про динамічний роутинг 
-        news_filterNews: (state, action) => {
+        news_filterNews: (state, action: PayloadAction<string>) => {
             let copyNewsArr = [...state.news]
             let filteredArr: any = []; 
 

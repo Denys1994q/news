@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../hooks/reduxTypes";
 
 import SearchInput from "../inputs/SearchInput";
 import "./filter-panel.sass";
 
 const FilterPanel = (): JSX.Element => {
-    const news = useSelector((state: any) => state.newsSlice.news);
-    const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
+    const news = useAppSelector(state => state.newsSlice.news);
+    const filteredNews = useAppSelector(state => state.newsSlice.filteredNews);
 
     return (
         <div className='filter-panel'>

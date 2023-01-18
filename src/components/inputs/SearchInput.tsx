@@ -1,6 +1,6 @@
 import "./searchInput.sass";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxTypes";
 import { useState, ChangeEvent } from "react";
 import { TextField } from "@mui/material";
 
@@ -8,10 +8,10 @@ import { news_filterNews, news_getSearchInpValue } from "../../slices/newsSlice"
 import { SearchInputProps } from "./searchInput.props";
 
 const SearchInput = ({ label, placeholder }: SearchInputProps): JSX.Element => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [inputValue, setInputValue] = useState<string>("");
 
-    const newsError = useSelector((state: any) => state.newsSlice.newsError);
+    const newsError = useAppSelector(state => state.newsSlice.newsError);
 
     // фільтр працює по кліку на значок в інпуті
     const filterNews = () => {
@@ -35,18 +35,30 @@ const SearchInput = ({ label, placeholder }: SearchInputProps): JSX.Element => {
                     className='searchInput__icon'
                     alt='filter-icon'
                 />
-                <TextField
-                    placeholder={placeholder}
-                    id='filter-input'
-                    color={"info"}
-                    type={"text"}
-                    value={inputValue}
-                    disabled={newsError}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeData(e)}
-                    className={"searchInput__input"}
-                    autoFocus={true}
-                    inputProps={{ style: { fontSize: 16, paddingLeft: 60 } }}
-                />
+                <div className='searchInput__input'>
+                    <TextField
+                        placeholder={placeholder}
+                        id='filter-input'
+                        color={"info"}
+                        type={"text"}
+                        value={inputValue}
+                        disabled={newsError}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeData(e)}
+                        autoFocus={true}
+                        inputProps={{
+                            style: {
+                                fontSize: 16,
+                                paddingLeft: 60,
+                                border: "1px solid #EAEAEA",
+                                boxShadow: "0px 8px 4px rgba(0, 0, 0, 0.05)",
+                                borderRadius: "5px",
+                                fontWeight: 400,
+                                display: "block",
+                                position: "relative",
+                            },
+                        }}
+                    />
+                </div>
             </div>
         </>
     );

@@ -2,7 +2,7 @@ import "./cardsList.sass";
 
 import Card from "../card/Card";
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxTypes";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import { CardProps } from "../card/card.props";
@@ -11,12 +11,12 @@ import { fetchNews } from "../../slices/newsSlice";
 
 // помилку обробити
 const CardsList = (): JSX.Element => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const allNewsFromServer = useSelector((state: any) => state.newsSlice.news);
-    const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
-    const newsLoading = useSelector((state: any) => state.newsSlice.newsLoading);
-    const newsError = useSelector((state: any) => state.newsSlice.newsError);
+    const allNewsFromServer = useAppSelector(state => state.newsSlice.news);
+    const filteredNews = useAppSelector(state => state.newsSlice.filteredNews);
+    const newsLoading = useAppSelector(state => state.newsSlice.newsLoading);
+    const newsError = useAppSelector(state => state.newsSlice.newsError);
 
     useEffect(() => {
         dispatch(fetchNews());
