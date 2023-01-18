@@ -1,9 +1,8 @@
 import "./article.sass";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useHttp } from "../../hooks/http.hook";
+import { useParams } from "react-router-dom";
+import {  useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import { fetchArticle } from "../../slices/articleSlice";
