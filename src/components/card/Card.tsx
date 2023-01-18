@@ -1,19 +1,18 @@
 import "./card.sass";
 
-import { useSelector } from "react-redux/";
+import { useAppSelector } from "../../hooks/reduxTypes";
 
 import { CardProps } from "./card.props";
 
 import NavBtn from "../btns/NavBtn";
 
-import { Box, Card, CardContent, CardMedia, CardActions, Typography } from "@mui/material";
+import { Card, CardContent, CardMedia, CardActions, Typography } from "@mui/material";
 
-// тут міняти тайтл, не лізти до фільтрованих щоб не редакс
 const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Element => {
     const slicedTitle = title.length > 100 ? title.slice(0, 100) + "..." : title;
     const slicedSummary = summary.length > 100 ? summary.slice(0, 100) + "..." : summary;
-    const filteredNews = useSelector((state: any) => state.newsSlice.filteredNews);
-    const searchInpValue = useSelector((state: any) => state.newsSlice.searchInpValue);
+    const filteredNews = useAppSelector(state => state.newsSlice.filteredNews);
+    const searchInpValue = useAppSelector(state => state.newsSlice.searchInpValue);
 
     // відображаємо дату в потрібному форматі
     const getDate = (publishedDate: any) => {

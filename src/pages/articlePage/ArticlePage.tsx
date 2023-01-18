@@ -1,8 +1,8 @@
 import "./article.sass";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxTypes";
 import { useParams } from "react-router-dom";
-import {  useEffect } from "react";
+import { useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import { fetchArticle } from "../../slices/articleSlice";
@@ -13,11 +13,11 @@ import { CardProps } from "../../components/card/card.props";
 
 const ArticlePage = (): JSX.Element => {
     const { id } = useParams();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const article: CardProps | null = useSelector((state: any) => state.articleSlice.article);
-    const articleLoading = useSelector((state: any) => state.articleSlice.articleLoading);
-    const articleError = useSelector((state: any) => state.articleSlice.articleError);
+    const article: CardProps | null = useAppSelector(state => state.articleSlice.article);
+    const articleLoading = useAppSelector(state => state.articleSlice.articleLoading);
+    const articleError = useAppSelector(state => state.articleSlice.articleError);
 
     useEffect(() => {
         dispatch(fetchArticle(id));

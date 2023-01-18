@@ -9,7 +9,6 @@ import { CardProps } from "../card/card.props";
 
 import { fetchNews } from "../../slices/newsSlice";
 
-// помилку обробити
 const CardsList = (): JSX.Element => {
     const dispatch = useAppDispatch();
 
