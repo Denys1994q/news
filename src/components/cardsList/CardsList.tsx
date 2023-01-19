@@ -25,13 +25,15 @@ const CardsList = (): JSX.Element => {
     const news = !filteredNews ? allNewsFromServer : filteredNews;
     const newsCardContent = news.map((item: CardProps) => {
         return (
-            <Card
-                id={item.id}
-                title={item.title}
-                imageUrl={item.imageUrl}
-                summary={item.summary}
-                publishedAt={item.publishedAt}
-            />
+            <li key={item.id}>
+                <Card
+                    id={item.id}
+                    title={item.title}
+                    imageUrl={item.imageUrl}
+                    summary={item.summary}
+                    publishedAt={item.publishedAt}
+                />
+            </li>
         );
     });
 

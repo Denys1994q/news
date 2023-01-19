@@ -15,7 +15,7 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
     const searchInpValue = useAppSelector(state => state.newsSlice.searchInpValue);
 
     // відображаємо дату в потрібному форматі
-    const getDate = (publishedDate: any) => {
+    const getDate = (publishedDate: string) => {
         let newDate = new Date(publishedDate);
         const year = newDate.getFullYear();
 
@@ -24,12 +24,16 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
         return date;
     };
 
-    // виділяє знайдені слова в тексті
+    // виділяє знайдені слова в тексті. // фільтр відбувається по необрізоній версії заголовку і опису новини. Тому може бути, що слово, введене юзером, не підсвититься жовтим, але у фільтр потрапить: це означає, що введене слово чи слова є в повній версії заголовку або опису і в цьому можна переконатися, якщо перейти на вкладку новини
     const highlightLetters = (data: string): any => {
         // масив чисел, які означають індекси слів, які потрібно виділити
         let numbers: number[] = [];
+        // забираємо коми
+        let strWithoutCommas = searchInpValue.replace(/,/g, "");
+        // забираємо пробіли вкінці, на початку і зайві пробіли між слова
+        let newStr = strWithoutCommas.replace(/\s+/g, " ").trim();
         // масив слів з інпута
-        const inputWordsArr = searchInpValue.trim().split(" ");
+        let inputWordsArr: string[] = newStr.toLowerCase().split(" ");
         // масив слів із вхідних даних
         const dataWordsArr = data.trim().split(" ");
         // перебираємо кожне слово із масиву даних
@@ -49,9 +53,14 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
             .split(" ")
             .map((word: string, index: number) => {
                 if (numbers.includes(index)) {
-                    return <span className='card__highlighted'> {word}</span>;
+                    return (
+                        <span key={index} className='card__highlighted'>
+                            {" "}
+                            {word}
+                        </span>
+                    );
                 } else {
-                    return <span> {word} </span>;
+                    return <span key={index}> {word} </span>;
                 }
             });
     };
@@ -75,7 +84,7 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
     };
 
     return (
-        <li className='card'>
+        <div className='card'>
             <Card sx={{ width: 400 }}>
                 <CardMedia
                     sx={{ height: "217px", borderRadius: "5px 5px 0px 0px" }}
@@ -105,7 +114,7 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
                     </div>
                 </CardContent>
             </Card>
-        </li>
+        </div>
     );
 };
 
