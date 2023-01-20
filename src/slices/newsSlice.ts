@@ -24,11 +24,11 @@ export const fetchNews = createAsyncThunk<CardProps[], undefined, {rejectValue: 
     return request(`https://api.spaceflightnewsapi.net/v3/articles`);
 });
 
-// ф-ія проходить по тайтлу і деску і шукає кусок через індексОф з цими словами і підсвідчує їх. 
 const newsSlice = createSlice({
     name: "news",
     initialState,
     reducers: {
+        // фільтр залишає новини, в яких в заголовку чи описі є keywords. Першими показуються новини, де збіги знайдено в заголовку. 
         news_filterNews: (state, action: PayloadAction<string>) => {
             let copyNewsArr: CardProps[] = [...state.news]
             let filteredSortedArr: CardProps[] = [];
@@ -38,6 +38,7 @@ const newsSlice = createSlice({
             let strWithoutCommas: string = str.replace(/,/g, "");
             // забираємо пробіли не тільки на початку і в кінці, але й забираємо зайві пробіли всередині між словами (якщо вони є)
             let newStr: string = strWithoutCommas.replace(/\s+/g, " ").trim();
+            // приводимо до нижнього регістру і розділяємо слова по пробілах між ними 
             let inputWordsArr: string[] = newStr.toLowerCase().split(" ");
             
             // якщо інпут пустий, показуємо всі новини
@@ -82,91 +83,6 @@ const newsSlice = createSlice({
             });
     
             state.filteredNews = [...filteredSortedArr]
-
-
-            // let copyNewsArr = [...state.news]
-            // let filteredArr: any = []; 
-
-            // let str = action.payload
-            // // забираємо коми. Щоб, наприклад, введене слово Wednesday знаходило всі новини, де є або Wednesday, або Wednesday,
-            // let strWithoutCommas = str.replace(/,/g, '')
-            // // забираємо пробіли не тільки на початку і в кінці, але й забираємо зайві пробіли всередині між словами (якщо вони є)
-            // let newStr = strWithoutCommas.replace(/\s+/g, ' ').trim()
-            // let inputWordsArr: string[] = newStr.toLowerCase().split(' ')
-            // // якщо інпут пустий, показуємо всі новини 
-            // if (str === '') {
-            //     filteredArr = [...state.news] 
-            // }
-            
-            // let nums: number[] = []
-            // let nums2: number[] = []
-            // inputWordsArr.map((wordInInput: string) => {
-            //     copyNewsArr.map((item: CardProps, index: number) => {
-            //         let newTitle: string = item.title.replace(/[\s+,]/g, ' ')
-            //         let newDesc: string = item.summary.replace(/[\s+,]/g, ' ')
-            //         let lowerCasedTitle: string[] = newTitle.toLowerCase().split(' ')
-            //         let lowerCasedDesc: string[] = newDesc.toLowerCase().split(' ');
-            //         lowerCasedTitle.map((wordInTitle: string) => {
-            //             if (wordInTitle === wordInInput && filteredArr.indexOf(item) === -1) {
-            //                 nums.push(index)
-            //                 filteredArr.push(item)
-            //             } 
-            //         })
-            //         lowerCasedDesc.map((wordInDesc: string) => {
-            //             if (wordInDesc === wordInInput && lowerCasedTitle.indexOf(wordInInput) === -1  && filteredArr.indexOf(item) === -1) {
-            //                 nums2.push(index)
-            //                 filteredArr.push(item)
-            //             } 
-            //         })                   
- 
-
-            //         // // якщо не знайшло в тайтлі, тільки тоді шукати в описі 
-            //         // lowerCasedTitle.map((wordInTitle: string) => {
-            //         //     // якщо знайдено підрядок в заголовку - додаємо новину на початок масиву і якщо цього об'єкту ще не додано
-            //         //     if (wordInTitle === wordInInput && filteredArr.indexOf(item) === -1) {
-            //         //         filteredArr.unshift(item)
-            //         //     } 
-            //         // })
-            //         // lowerCasedDesc.map((wordInDesc: string) => {
-            //         //     // якщо знайдено підрядок в описі - додаємо новину в кінець масиву і якщо цього об'єкту ще не додано
-            //         //     if (wordInDesc === wordInInput && filteredArr.indexOf(item) === -1) {
-            //         //         filteredArr.push(item)
-            //         //     } 
-            //         // })
-            //     })
-            // })
-            // let k: any = [];
-            // let s: any = [];
-            // copyNewsArr.map((item: any, index: number) => {
-            //     nums.map(num => {
-            //         if (index === num) {
-            //             k.push(item)
-            //         } 
-            //     }) 
-            // })
-
-            // copyNewsArr.map((item: any, index: number) => {
-            //     nums2.map(num => {
-            //         if (index === num) {
-            //             s.push(item)
-            //         } 
-            //     }) 
-            // })
- 
-            // console.log(k.length)
-            // console.log(s.length)
-
-            // let j = [...k, ...s]
-
-            // // хочеться добавити свойтсво в об'кт таки де є в тайтлі і тоді легко відсортується по цьому свойству, але проблема там перевірка йде 
-            // // let p = filteredArr.sort((a: any, b: any) => {
-            // //     console.log(a)
-
-            // //     return b.title.indexOf('mission') - a.title.indexOf('mission')
-            // // })
-            // // console.log(p)
-            // // може після цього зробити сорт і там прописати умови, що, якщо є в тайтлі, то спочатку
-            // state.filteredNews = j;
         },
         news_getSearchInpValue: (state, action) => {
             state.searchInpValue = action.payload

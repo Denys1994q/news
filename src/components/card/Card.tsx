@@ -9,8 +9,8 @@ import NavBtn from "../btns/NavBtn";
 import { Card, CardContent, CardMedia, CardActions, Typography } from "@mui/material";
 
 const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX.Element => {
-    const slicedTitle = title.length > 100 ? title.slice(0, 100) + "..." : title;
-    const slicedSummary = summary.length > 100 ? summary.slice(0, 100) + "..." : summary;
+    const slicedTitle: string = title.length > 100 ? title.slice(0, 100) + "..." : title;
+    const slicedSummary: string = summary.length > 100 ? summary.slice(0, 100) + "..." : summary;
     const filteredNews = useAppSelector(state => state.newsSlice.filteredNews);
     const searchInpValue = useAppSelector(state => state.newsSlice.searchInpValue);
 
@@ -24,18 +24,18 @@ const NewsCard = ({ id, imageUrl, title, summary, publishedAt }: CardProps): JSX
         return date;
     };
 
-    // виділяє знайдені слова в тексті. // фільтр відбувається по необрізоній версії заголовку і опису новини. Тому може бути, що слово, введене юзером, не підсвититься жовтим, але у фільтр потрапить: це означає, що введене слово чи слова є в повній версії заголовку або опису і в цьому можна переконатися, якщо перейти на вкладку новини
+    // виділяє знайдені слова в тексті. Фільтр відбувається по необрізаній версії заголовку і опису новини. Тому може бути, що слово, введене юзером, не підсвититься жовтим, але у фільтр потрапить: це означає, що введене слово чи слова є в повній версії заголовку або опису і в цьому можна переконатися, якщо перейти на вкладку новини.
     const highlightLetters = (data: string): any => {
         // масив чисел, які означають індекси слів, які потрібно виділити
         let numbers: number[] = [];
         // забираємо коми
-        let strWithoutCommas = searchInpValue.replace(/,/g, "");
+        let strWithoutCommas: string = searchInpValue.replace(/,/g, "");
         // забираємо пробіли вкінці, на початку і зайві пробіли між слова
-        let newStr = strWithoutCommas.replace(/\s+/g, " ").trim();
+        let newStr: string = strWithoutCommas.replace(/\s+/g, " ").trim();
         // масив слів з інпута
         let inputWordsArr: string[] = newStr.toLowerCase().split(" ");
         // масив слів із вхідних даних
-        const dataWordsArr = data.trim().split(" ");
+        const dataWordsArr: string[] = data.trim().split(" ");
         // перебираємо кожне слово із масиву даних
         dataWordsArr.map((dataWord: string, index: number) => {
             inputWordsArr.map((inpWord: string) => {
